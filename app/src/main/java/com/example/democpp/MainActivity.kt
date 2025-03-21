@@ -1,13 +1,15 @@
 package com.example.democpp
 
-import androidx.appcompat.app.AppCompatActivity
+import android.opengl.GLSurfaceView
 import android.os.Bundle
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.example.democpp.databinding.ActivityMainBinding
+import com.example.democpp.opengl.TriangleRenderer
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var glSurfaceView: GLSurfaceView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,6 +19,23 @@ class MainActivity : AppCompatActivity() {
 
         // Example of a call to a native method
         binding.sampleText.text = stringFromJNI()
+
+        glSurfaceView = binding.glSurface.apply {
+            setEGLContextClientVersion(3)
+            setRenderer(TriangleRenderer())
+            renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
+        }
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        glSurfaceView.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        glSurfaceView.onResume()
     }
 
     /**
