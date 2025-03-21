@@ -1,9 +1,12 @@
 package com.example.democpp
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import com.example.democpp.databinding.ActivityMainBinding
+import com.example.democpp.opengl.GLActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,9 +17,33 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
 
-        // Example of a call to a native method
+        setupDrawer()
+
         binding.sampleText.text = stringFromJNI()
+    }
+
+    private fun setupDrawer() {
+        val toggle = ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            binding.toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+        binding.drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_home -> {}
+                R.id.nav_gl -> {
+                    startActivity(Intent(this, GLActivity::class.java))
+                }
+            }
+            binding.drawerLayout.closeDrawer(GravityCompat.START) // 关闭抽屉
+            true
+        }
     }
 
     /**
@@ -24,6 +51,7 @@ class MainActivity : AppCompatActivity() {
      * which is packaged with this application.
      */
     external fun stringFromJNI(): String
+
 
     companion object {
         // Used to load the 'democpp' library on application startup.
